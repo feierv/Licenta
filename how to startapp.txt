@@ -1,0 +1,9 @@
+1. crypto_venv\Scripts\activate.bat
+
+2. cd python-blockchain-tutorial-master
+
+3. pip install -r requirements.txt
+
+4. python -m backend.app
+
+5. npm run start
