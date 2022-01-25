@@ -13,7 +13,8 @@ from backend.pubsub import PubSub
 import json, os, signal
 
 app = Flask(__name__)
-CORS(app, resources={ r'/*': { 'origins': 'http://localhost:3000' } })
+CORS(app) 
+# resources={ r'/*': { 'origins': 'http://localhost:3000' } })
 blockchain = Blockchain()
 wallet = Wallet(blockchain)
 transaction_pool = TransactionPool()
@@ -72,14 +73,17 @@ def route_wallet_transact():
 
     return jsonify(transaction.to_json())
 
-@app.route('/wallet/info')
+@app.route('/wallet/info', methods=['GET'])
 def route_wallet_info():
-    if request.args.get('api_deduct') is not None:
+    if request.args.get('api_deduct') and request.args.get('wallet_key'):
         value = request.args.get('api_deduct')
+        wallet_key = request.args.get('wallet_key')
+        if wallet.address != wallet_key:
+            return jsonify({'message':'invalid api key!', 'status':400})
         result = wallet.deduct_value(value)
         if result is status.HTTP_400_BAD_REQUEST:
-            return 'not enough funds!'
-    return jsonify({ 'address': wallet.address, 'balance': wallet.balance })
+            return jsonify({'message':'not enough funds!', 'status':400})
+    return jsonify({ 'status':200 ,'address': wallet.address, 'balance': wallet.balance })
 
 @app.route('/stopServer', methods=['GET'])
 def stopServer():
