@@ -42,12 +42,11 @@ class Wallet:
     def deduct_value(self, value):
         balance = self.balance
         if value:
-            if int(value) > balance:
+            if int(float(value)) > balance:
                 return status.HTTP_400_BAD_REQUEST
             else:
-                self.deductions.append(int(value))
+                self.deductions.append(int(float(value)))
             # print(5*'\n', value , self.deductions)
-        return 
 
     def sign(self, data):
         """
